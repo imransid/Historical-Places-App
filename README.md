@@ -1,97 +1,112 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Historical Places App (React Native)
 
-# Getting Started
+This repository contains a full‑featured **React Native** mobile application that
+lists famous historical sites and allows users to keep track of which ones
+they have visited. It serves as a reference implementation of modern React Native
+development practices: state management with
+[`@reduxjs/toolkit`](https://redux-toolkit.js.org/), persistence with
+`redux-persist`, action logging with `redux-logger` and an animated splash
+screen powered by
+[react‑native‑reanimated](https://docs.swmansion.com/react-native-reanimated/).
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+The project is written in TypeScript and uses a **module alias** (`@`) to
+simplify import paths. When you see imports such as `@/store` or
+`@/navigation/AppNavigator`, they resolve into files inside the `src` directory
+thanks to the `module-resolver` Babel plugin and matching configuration in
+`tsconfig.json`. A custom persist transform ensures only the minimal state
+(visited flags and the last suggestion) is stored to disk.
 
-## Step 1: Start Metro
+## Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **List of places** – Shows a scrollable list of historical sites loaded from static JSON data. Each item displays the name and a short description.
+- **Mark visited** – A switch on each list row toggles the visited state. Visited information is persisted across app restarts.
+- **Random suggestion** – Tap the "Suggest Random Place" button to highlight a random entry and optionally jump directly to its details.
+- **Detail view** – Displays a larger image, full description and visited toggle for an individual place.
+- **Animated splash screen** – On launch, an animated splash screen fades and scales in the app title before transitioning to the main app. The animation uses Reanimated and is carefully written to run on the UI thread via `runOnJS` to avoid worklet violations.
+- **State persistence** – Only the visited statuses and last suggestion are saved to persistent storage to minimise the amount of data stored. This is achieved with a custom [`placesMinimalTransform`](./src/store/persistTransform.js).
+- **Development logger** – In development mode, every dispatched Redux action is printed to the console via `redux-logger` to aid debugging. Logging is disabled in production builds.
+- **TypeScript and aliases** – The project is fully typed via TypeScript and uses a single `@` alias to refer to the `src` folder (for example, `@/store`, `@/screens`). This makes import paths short and clear.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Getting Started
 
-```sh
-# Using npm
-npm start
+### Prerequisites
 
-# OR using Yarn
-yarn start
+- **Node.js ≥ 20.19.4** – React Native 0.81.x requires Node 20.19.4 or newer in the 20 LTS line. Use [nvm](https://github.com/nvm-sh/nvm) or [fnm](https://github.com/Schniz/fnm) to manage versions. A `.nvmrc` file is included so `nvm use` will automatically switch to the correct version.
+- **React Native CLI environment** – You need a working Xcode installation (for iOS) and the Android SDK (for Android). Follow the [environment setup guide](https://reactnative.dev/docs/environment-setup) for React Native CLI.
+- **Yarn package manager** – The commands below use `yarn`. If you prefer `npm`, adjust accordingly.
+
+**Tip:** If you switch the Reanimated plugin or alias configuration, clear Metro’s cache by running `yarn start --reset-cache` to avoid stale module resolution errors.
+
+### Installation
+
+1. Clone this repository and install dependencies:
+
+   ```bash
+   git clone <repo-url>
+   cd historical-places-app
+   # Ensure the correct Node version
+   nvm use   # loads Node version from .nvmrc
+   # Install JavaScript and native dependencies
+   yarn install
+   # install iOS pods (macOS only)
+   npx pod-install ios
+   ```
+
+2. Run the Metro bundler:
+
+   ```bash
+   yarn start
+   ```
+
+3. In a separate terminal, launch the app on an emulator or device:
+
+   ```bash
+   # To run on iOS simulator (requires macOS and Xcode)
+   yarn ios
+
+   # To run on an Android emulator or device
+   yarn android
+   ```
+
+When you launch the app it will show an animated splash screen and then list the historical places. You can mark places as visited, view details and jump directly to a randomly suggested place.
+
+## Project Structure and Alias
+
+```
+MyHistoricalApp/
+├── App.js                     # Root component with Provider, PersistGate and Splash
+├── babel.config.js            # Babel configuration with Reanimated plugin
+├── .nvmrc                     # Node version specification
+└── src/
+    ├── navigation/
+    │   └── AppNavigator.js    # Stack navigator definitions
+    ├── screens/
+    │   ├── HomeScreen.js      # List view with toggle switches and random suggestion
+    │   ├── DetailScreen.js    # Details for a single place
+    │   └── SplashScreen.js    # Animated splash using Reanimated and runOnJS
+    ├── components/
+    │   └── PlaceListItem.js   # Reusable list item component
+    ├── data/
+    │   └── places.js          # Mock data of historical places
+    └── store/
+        ├── index.js           # Configures Redux store with persist and logger
+        ├── persistTransform.js# Custom persist transform to ignore static lists
+        └── places/
+            └── placesSlice.js # Redux Toolkit slice for place state
 ```
 
-## Step 2: Build and run your app
+### Alias usage
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Thanks to the `module-resolver` plugin and the path configuration in `tsconfig.json`,
+the `@` symbol maps to the `src` directory. This means you can import modules
+cleanly without long relative paths. For example:
 
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```js
+// instead of '../../../store/index'
+import store from '@/store';
+// instead of '../../navigation/AppNavigator'
+import AppNavigator from '@/navigation/AppNavigator';
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+If you modify the alias mapping, remember to update both `babel.config.js` and
+`tsconfig.json` to keep Metro, TypeScript and Jest (if used) in sync.
