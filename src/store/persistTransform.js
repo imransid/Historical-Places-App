@@ -1,4 +1,5 @@
 import { createTransform } from 'redux-persist';
+import data from '../data/places';
 
 export const placesMinimalTransform = createTransform(
   (inboundState, key) => {
@@ -10,7 +11,7 @@ export const placesMinimalTransform = createTransform(
 
   (outboundState, key) => {
     return {
-      list: [],
+      list: data,
       visited: outboundState.visited || {},
       suggested: outboundState.suggested ?? null,
     };

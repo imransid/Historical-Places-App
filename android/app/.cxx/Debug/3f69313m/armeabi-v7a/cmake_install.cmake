@@ -48,6 +48,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/armeabi-v7a/rnreanimated_autolinked_build/cmake_install.cmake")
   include("/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/armeabi-v7a/safeareacontext_autolinked_build/cmake_install.cmake")
   include("/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/armeabi-v7a/rnscreens_autolinked_build/cmake_install.cmake")
+  include("/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/armeabi-v7a/RNVectorIconsSpec_autolinked_build/cmake_install.cmake")
   include("/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/armeabi-v7a/rnworklets_autolinked_build/cmake_install.cmake")
 
 endif()

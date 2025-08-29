@@ -13,6 +13,9 @@
 /Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir
 /Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/rnscreens_autolinked_build/CMakeFiles/edit_cache.dir
 /Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/rnscreens_autolinked_build/CMakeFiles/rebuild_cache.dir
+/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir
+/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/RNVectorIconsSpec_autolinked_build/CMakeFiles/edit_cache.dir
+/Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/RNVectorIconsSpec_autolinked_build/CMakeFiles/rebuild_cache.dir
 /Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/rnworklets_autolinked_build/CMakeFiles/react_codegen_rnworklets.dir
 /Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/rnworklets_autolinked_build/CMakeFiles/edit_cache.dir
 /Users/rafa/Documents/github/tasks/MyHistoricalApp/android/app/.cxx/Debug/3f69313m/x86_64/rnworklets_autolinked_build/CMakeFiles/rebuild_cache.dir

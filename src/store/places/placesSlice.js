@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-// import data from '@/data/places';
+import data from '../../data/places';
 
 // The initial state includes the list of static places, a map of visited
 // statuses keyed by place id, and the id of the last suggested place. The
 // list is not persisted to storage to avoid storing duplicate static data.
 const initialState = {
-  list: [],
+  list: data,
   visited: {},
   suggested: null,
 };
@@ -20,6 +20,8 @@ const placesSlice = createSlice({
      */
     toggleVisited: (state, action) => {
       const id = action.payload;
+
+      if (!id) return;
       state.visited[id] = !state.visited[id];
     },
     /**
