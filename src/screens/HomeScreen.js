@@ -1,7 +1,15 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Banner, useTheme, Divider } from 'react-native-paper';
+import {
+  Banner,
+  Button,
+  FAB,
+  Searchbar,
+  SegmentedButtons,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import {
   scale,
   verticalScale as vscale,
@@ -19,6 +27,9 @@ export default function HomeScreen({ navigation }) {
   const visited = useSelector(state => state.places.visited);
   const suggested = useSelector(state => state.places.suggested);
 
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState('all'); // 'all' | 'visited' | 'unvisited'
+
   const onToggle = useCallback(id => dispatch(toggleVisited(id)), [dispatch]);
   const onSuggest = useCallback(
     () => dispatch(suggestRandomPlace()),
@@ -28,6 +39,24 @@ export default function HomeScreen({ navigation }) {
     id => navigation.navigate('Detail', { id }),
     [navigation],
   );
+
+  const suggestedPlace = useMemo(
+    () => places.find(p => String(p.id) === String(suggested)),
+    [places, suggested],
+  );
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return places.filter(p => {
+      const matchQ = !q || p.name.toLowerCase().includes(q);
+      const isVisited = !!visited[p.id];
+      const matchF =
+        filter === 'all' ||
+        (filter === 'visited' && isVisited) ||
+        (filter === 'unvisited' && !isVisited);
+      return matchQ && matchF;
+    });
+  }, [places, visited, query, filter]);
 
   const keyExtractor = useCallback(item => String(item.id), []);
   const renderItem = useCallback(
@@ -42,13 +71,19 @@ export default function HomeScreen({ navigation }) {
     [visited, onToggle, onOpenDetail],
   );
 
-  const ItemSeparator = useMemo(() => () => <Divider />, []);
   const ListEmpty = useMemo(
     () => () =>
       (
         <View style={styles.emptyWrap}>
-          <Button icon="database-search" mode="outlined" onPress={onSuggest}>
-            No places yet — suggest one
+          <Text style={{ opacity: 0.6, marginBottom: vscale(8) }}>
+            Nothing matches your search.
+          </Text>
+          <Button
+            icon="lightbulb-on-outline"
+            mode="outlined"
+            onPress={onSuggest}
+          >
+            Suggest Random Place
           </Button>
         </View>
       ),
@@ -59,17 +94,29 @@ export default function HomeScreen({ navigation }) {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      {/* Suggest button */}
-      <Button
-        mode="contained"
-        onPress={onSuggest}
-        style={styles.suggestBtn}
-        contentStyle={{ height: vscale(44) }}
-        labelStyle={{ fontSize: mscale(14), fontWeight: '700' }}
-        icon="lightbulb-on-outline"
-      >
-        Suggest Random Place
-      </Button>
+      {/* Header tools */}
+      <Searchbar
+        placeholder="Search places..."
+        value={query}
+        onChangeText={setQuery}
+        style={styles.search}
+        inputStyle={{ fontSize: mscale(14) }}
+      />
+
+      <SegmentedButtons
+        value={filter}
+        onValueChange={setFilter}
+        style={styles.segmented}
+        buttons={[
+          { value: 'all', label: 'All', icon: 'earth' },
+          { value: 'visited', label: 'Visited', icon: 'check' },
+          {
+            value: 'unvisited',
+            label: 'Unvisited',
+            icon: 'map-marker-off-outline',
+          },
+        ]}
+      />
 
       {/* Suggestion banner */}
       <Banner
@@ -78,37 +125,37 @@ export default function HomeScreen({ navigation }) {
         style={styles.banner}
         actions={
           suggested
-            ? [
-                {
-                  label: 'Open',
-                  onPress: () => onOpenDetail(suggested),
-                },
-              ]
+            ? [{ label: 'Open', onPress: () => onOpenDetail(suggested) }]
             : []
         }
       >
-        {suggested
+        {suggestedPlace
+          ? `Suggested: ${suggestedPlace.name}`
+          : suggested
           ? `Suggested place id: ${suggested}`
           : 'Get a random historical place to explore.'}
       </Banner>
 
-      {/* List of places using your PlaceListItem */}
+      {/* List */}
       <FlatList
-        data={places}
+        data={filtered}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        ItemSeparatorComponent={ItemSeparator}
         ListEmptyComponent={ListEmpty}
-        contentContainerStyle={{ paddingBottom: vscale(16) }}
-        // (optional) improves performance if rows are similar height
-        // getItemLayout={(data, index) => ({
-        //   length: vscale(56),
-        //   offset: vscale(56) * index,
-        //   index,
-        // })}
+        contentContainerStyle={{ paddingBottom: vscale(96) }}
+        ItemSeparatorComponent={() => <View style={{ height: vscale(8) }} />}
         removeClippedSubviews
-        initialNumToRender={10}
+        initialNumToRender={12}
         windowSize={7}
+      />
+
+      {/* Floating Suggest FAB */}
+      <FAB
+        icon="lightbulb-on-outline"
+        label="Suggest"
+        onPress={onSuggest}
+        style={styles.fab}
+        variant="primary"
       />
     </View>
   );
@@ -120,17 +167,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(12),
     paddingTop: vscale(12),
   },
-  suggestBtn: {
-    borderRadius: mscale(10),
+  search: {
+    marginBottom: vscale(8),
+    borderRadius: mscale(12),
+  },
+  segmented: {
     marginBottom: vscale(8),
   },
   banner: {
     marginBottom: vscale(8),
-    borderRadius: mscale(10),
+    borderRadius: mscale(12),
+  },
+  fab: {
+    position: 'absolute',
+    right: scale(16),
+    bottom: vscale(20),
   },
   emptyWrap: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: vscale(24),
+    paddingVertical: vscale(32),
   },
 });
