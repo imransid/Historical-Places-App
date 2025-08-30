@@ -4,11 +4,20 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
-
 import store, { persistor } from './src/store';
 import AppNavigator from './src/navigation/AppNavigator';
 import SplashScreen from './src/screens/SplashScreen';
 
+/// Deep linking configuration
+const linking = {
+  prefixes: ['myhistoricalapp://'],
+  config: {
+    screens: {
+      Home: 'home',
+      Detail: 'place/:id',
+    },
+  },
+};
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -22,9 +31,9 @@ export default function App() {
       {/* PersistGate delays rendering of the app until the persisted state has been retrieved. */}
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
         {showSplash ? (
-          <SplashScreen onFinish={handleSplashFinished} />
+          <SplashScreen onFinish={handleSplashFinished} bg={undefined} />
         ) : (
-          <NavigationContainer>
+          <NavigationContainer linking={linking} fallback={<ActivityIndicator />}>
             <PaperProvider>
               <AppNavigator />
             </PaperProvider>

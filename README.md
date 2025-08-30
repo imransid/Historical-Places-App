@@ -110,3 +110,9 @@ import AppNavigator from '@/navigation/AppNavigator';
 
 If you modify the alias mapping, remember to update both `babel.config.js` and
 `tsconfig.json` to keep Metro, TypeScript and Jest (if used) in sync.
+
+## Test Deep Like
+
+adb shell am start -a android.intent.action.VIEW -d "myhistoricalapp://place/123"
+
+xcrun simctl openurl booted "myhistoricalapp://place/123"

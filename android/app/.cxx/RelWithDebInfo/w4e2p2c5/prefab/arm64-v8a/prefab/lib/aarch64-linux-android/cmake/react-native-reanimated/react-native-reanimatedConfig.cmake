@@ -1,0 +1,9 @@
+if(NOT TARGET react-native-reanimated::reanimated)
+add_library(react-native-reanimated::reanimated SHARED IMPORTED)
+set_target_properties(react-native-reanimated::reanimated PROPERTIES
+    IMPORTED_LOCATION "/Users/rafa/Documents/github/tasks/MyHistoricalApp/node_modules/react-native-reanimated/android/build/intermediates/cxx/RelWithDebInfo/664tk4z5/obj/arm64-v8a/libreanimated.so"
+    INTERFACE_INCLUDE_DIRECTORIES "/Users/rafa/Documents/github/tasks/MyHistoricalApp/node_modules/react-native-reanimated/android/build/prefab-headers/reanimated"
+    INTERFACE_LINK_LIBRARIES ""
+)
+endif()
+
